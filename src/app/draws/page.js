@@ -39,8 +39,8 @@ export default function DrawsPage() {
   }
 
   function formatCurrency(amount) {
-    return new Intl.NumberFormat('en-GB', {
-      style: 'currency', currency: 'GBP'
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency', currency: 'USD'
     }).format(amount || 0)
   }
 
