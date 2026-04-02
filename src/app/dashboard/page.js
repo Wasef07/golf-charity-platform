@@ -58,7 +58,7 @@ export default function DashboardPage() {
       <nav className="border-b border-gray-800 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-white">⛳ Golf Charity</h1>
+            <h1 className="text-xl font-bold text-white">Golf Charity</h1>
           </div>
           <div className="flex items-center gap-4">
             <a href="/draws" className="text-gray-400 hover:text-white text-sm transition">
