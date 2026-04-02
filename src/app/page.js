@@ -1,42 +1,57 @@
-'use client'
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { getFeaturedCharities } from '@/lib/charities'
+"use client";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { getFeaturedCharities } from "@/lib/charities";
 
 export default function HomePage() {
-  const [charities, setCharities] = useState([])
-  const [scrolled, setScrolled] = useState(false)
+  const [charities, setCharities] = useState([]);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    getFeaturedCharities().then(({ data }) => setCharities(data || []))
-    const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    getFeaturedCharities().then(({ data }) => setCharities(data || []));
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
-
       {/* ── NAVBAR ── */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-black/90 backdrop-blur-md border-b border-gray-800' : 'bg-transparent'
-      }`}>
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? "bg-black/90 backdrop-blur-md border-b border-gray-800"
+            : "bg-transparent"
+        }`}
+      >
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">⛳</span>
+            <span className="text-2xl"></span>
             <span className="font-bold text-lg">Golf Charity</span>
           </div>
           <div className="hidden md:flex items-center gap-8">
-            <a href="#how-it-works" className="text-gray-400 hover:text-white text-sm transition">
+            <a
+              href="#how-it-works"
+              className="text-gray-400 hover:text-white text-sm transition"
+            >
               How It Works
             </a>
-            <a href="#charities" className="text-gray-400 hover:text-white text-sm transition">
+            <a
+              href="#charities"
+              className="text-gray-400 hover:text-white text-sm transition"
+            >
               Charities
             </a>
-            <a href="#prizes" className="text-gray-400 hover:text-white text-sm transition">
+            <a
+              href="#prizes"
+              className="text-gray-400 hover:text-white text-sm transition"
+            >
               Prizes
             </a>
-            <Link href="/login" className="text-gray-400 hover:text-white text-sm transition">
+            <Link
+              href="/login"
+              className="text-gray-400 hover:text-white text-sm transition"
+            >
               Sign In
             </Link>
             <Link
@@ -58,7 +73,6 @@ export default function HomePage() {
 
       {/* ── HERO ── */}
       <section className="relative min-h-screen flex items-center justify-center px-6 pt-20">
-
         {/* Background Glow */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-green-500/10 rounded-full blur-3xl" />
@@ -66,7 +80,6 @@ export default function HomePage() {
         </div>
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
-
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-4 py-2 rounded-full mb-8">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
@@ -83,8 +96,9 @@ export default function HomePage() {
           </h1>
 
           <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-            The platform where your golf scores enter you into monthly prize draws —
-            while a portion of every subscription goes to a charity you choose.
+            The platform where your golf scores enter you into monthly prize
+            draws — while a portion of every subscription goes to a charity you
+            choose.
           </p>
 
           {/* CTAs */}
@@ -106,10 +120,10 @@ export default function HomePage() {
           {/* Social Proof */}
           <div className="flex items-center justify-center gap-8 mt-12 pt-12 border-t border-gray-800">
             {[
-              { value: '2,400+', label: 'Active Players' },
-              { value: '£48,000+', label: 'Prizes Won' },
-              { value: '£12,000+', label: 'Donated to Charity' },
-            ].map(stat => (
+              { value: "2,400+", label: "Active Players" },
+              { value: "£48,000+", label: "Prizes Won" },
+              { value: "£12,000+", label: "Donated to Charity" },
+            ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <p className="text-2xl font-bold text-white">{stat.value}</p>
                 <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
@@ -132,27 +146,27 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                step: '01',
-                icon: '📋',
-                title: 'Subscribe & Choose',
-                desc: 'Pick a monthly or yearly plan. Select a charity to support with a portion of your subscription fee.',
-                color: 'border-green-500/30 bg-green-500/5'
+                step: "01",
+                icon: "📋",
+                title: "Subscribe & Choose",
+                desc: "Pick a monthly or yearly plan. Select a charity to support with a portion of your subscription fee.",
+                color: "border-green-500/30 bg-green-500/5",
               },
               {
-                step: '02',
-                icon: '⛳',
-                title: 'Enter Your Scores',
-                desc: 'Log your last 5 Stableford golf scores (1–45 points each). These are your draw numbers.',
-                color: 'border-blue-500/30 bg-blue-500/5'
+                step: "02",
+                icon: "⛳",
+                title: "Enter Your Scores",
+                desc: "Log your last 5 Stableford golf scores (1–45 points each). These are your draw numbers.",
+                color: "border-blue-500/30 bg-blue-500/5",
               },
               {
-                step: '03',
-                icon: '🏆',
-                title: 'Win Every Month',
-                desc: 'Monthly draws match your scores against drawn numbers. Match 3, 4, or all 5 to win cash prizes.',
-                color: 'border-yellow-500/30 bg-yellow-500/5'
+                step: "03",
+                icon: "🏆",
+                title: "Win Every Month",
+                desc: "Monthly draws match your scores against drawn numbers. Match 3, 4, or all 5 to win cash prizes.",
+                color: "border-yellow-500/30 bg-yellow-500/5",
               },
-            ].map(item => (
+            ].map((item) => (
               <div
                 key={item.step}
                 className={`rounded-2xl p-8 border ${item.color} relative overflow-hidden`}
@@ -182,33 +196,33 @@ export default function HomePage() {
           <div className="space-y-4">
             {[
               {
-                match: '5 Numbers',
-                share: '40%',
-                prize: 'Jackpot',
+                match: "5 Numbers",
+                share: "40%",
+                prize: "Jackpot",
                 rollover: true,
-                color: 'border-yellow-500 bg-yellow-500/10',
-                badge: 'bg-yellow-500 text-black',
-                icon: '🏆'
+                color: "border-yellow-500 bg-yellow-500/10",
+                badge: "bg-yellow-500 text-black",
+                icon: "🏆",
               },
               {
-                match: '4 Numbers',
-                share: '35%',
-                prize: 'Second Prize',
+                match: "4 Numbers",
+                share: "35%",
+                prize: "Second Prize",
                 rollover: false,
-                color: 'border-blue-500/50 bg-blue-500/5',
-                badge: 'bg-blue-500 text-white',
-                icon: '🥈'
+                color: "border-blue-500/50 bg-blue-500/5",
+                badge: "bg-blue-500 text-white",
+                icon: "🥈",
               },
               {
-                match: '3 Numbers',
-                share: '25%',
-                prize: 'Third Prize',
+                match: "3 Numbers",
+                share: "25%",
+                prize: "Third Prize",
                 rollover: false,
-                color: 'border-purple-500/50 bg-purple-500/5',
-                badge: 'bg-purple-500 text-white',
-                icon: '🥉'
+                color: "border-purple-500/50 bg-purple-500/5",
+                badge: "bg-purple-500 text-white",
+                icon: "🥉",
               },
-            ].map(tier => (
+            ].map((tier) => (
               <div
                 key={tier.match}
                 className={`flex items-center justify-between p-6 rounded-2xl border ${tier.color}`}
@@ -226,7 +240,9 @@ export default function HomePage() {
                       🔄 Jackpot Rollover
                     </span>
                   )}
-                  <span className={`text-lg font-bold px-4 py-2 rounded-xl ${tier.badge}`}>
+                  <span
+                    className={`text-lg font-bold px-4 py-2 rounded-xl ${tier.badge}`}
+                  >
                     {tier.share}
                   </span>
                 </div>
@@ -248,12 +264,13 @@ export default function HomePage() {
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold mb-4">Causes We Support</h2>
               <p className="text-gray-400 text-lg">
-                Choose a charity that matters to you. Every subscription contributes.
+                Choose a charity that matters to you. Every subscription
+                contributes.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {charities.map(charity => (
+              {charities.map((charity) => (
                 <div
                   key={charity.id}
                   className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden hover:border-green-500/50 transition group"
@@ -274,7 +291,9 @@ export default function HomePage() {
                         {charity.category}
                       </span>
                     </div>
-                    <p className="text-gray-400 text-sm line-clamp-2">{charity.description}</p>
+                    <p className="text-gray-400 text-sm line-clamp-2">
+                      {charity.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -303,22 +322,21 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
             {/* Monthly */}
             <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
               <h3 className="text-xl font-bold mb-1">Monthly</h3>
               <p className="text-gray-500 text-sm mb-6">Cancel anytime</p>
               <div className="mb-6">
-                <span className="text-5xl font-bold">£9.99</span>
+                <span className="text-5xl font-bold">$7.99</span>
                 <span className="text-gray-400 ml-2">/ month</span>
               </div>
               <ul className="space-y-3 mb-8 text-gray-300 text-sm">
                 {[
-                  'Monthly prize draw entry',
-                  'Track 5 Stableford scores',
-                  '10%+ goes to your charity',
-                  'Full dashboard access',
-                ].map(f => (
+                  "Monthly prize draw entry",
+                  "Track 5 Stableford scores",
+                  "10%+ goes to your charity",
+                  "Full dashboard access",
+                ].map((f) => (
                   <li key={f} className="flex items-center gap-2">
                     <span className="text-green-500">✓</span> {f}
                   </li>
@@ -340,18 +358,20 @@ export default function HomePage() {
                 </span>
               </div>
               <h3 className="text-xl font-bold mb-1">Yearly</h3>
-              <p className="text-gray-500 text-sm mb-6">Save £19.89 vs monthly</p>
+              <p className="text-gray-500 text-sm mb-6">
+                Save $69.89 vs monthly
+              </p>
               <div className="mb-6">
-                <span className="text-5xl font-bold">£99.99</span>
+                <span className="text-5xl font-bold">$25.99</span>
                 <span className="text-gray-400 ml-2">/ year</span>
               </div>
               <ul className="space-y-3 mb-8 text-gray-300 text-sm">
                 {[
-                  'Everything in Monthly',
-                  'Priority draw entries',
-                  'Exclusive yearly badge',
-                  'Early access to features',
-                ].map(f => (
+                  "Everything in Monthly",
+                  "Priority draw entries",
+                  "Exclusive yearly badge",
+                  "Early access to features",
+                ].map((f) => (
                   <li key={f} className="flex items-center gap-2">
                     <span className="text-green-500">✓</span> {f}
                   </li>
@@ -376,7 +396,8 @@ export default function HomePage() {
               Ready to play with purpose?
             </h2>
             <p className="text-gray-400 text-lg mb-8">
-              Join thousands of golfers winning prizes and supporting charities every month.
+              Join thousands of golfers winning prizes and supporting charities
+              every month.
             </p>
             <Link
               href="/signup"
@@ -399,17 +420,22 @@ export default function HomePage() {
             <span className="font-bold">Golf Charity Platform</span>
           </div>
           <div className="flex gap-6 text-sm text-gray-500">
-            <Link href="/charities" className="hover:text-white transition">Charities</Link>
-            <Link href="/subscribe" className="hover:text-white transition">Pricing</Link>
-            <Link href="/login" className="hover:text-white transition">Sign In</Link>
-            <Link href="/signup" className="hover:text-white transition">Sign Up</Link>
+            <Link href="/charities" className="hover:text-white transition">
+              Charities
+            </Link>
+            <Link href="/subscribe" className="hover:text-white transition">
+              Pricing
+            </Link>
+            <Link href="/login" className="hover:text-white transition">
+              Sign In
+            </Link>
+            <Link href="/signup" className="hover:text-white transition">
+              Sign Up
+            </Link>
           </div>
-          <p className="text-gray-600 text-sm">
-            © 2026 Golf Charity Platform
-          </p>
+          <p className="text-gray-600 text-sm">© 2026 Golf Charity Platform</p>
         </div>
       </footer>
-
     </div>
-  )
+  );
 }

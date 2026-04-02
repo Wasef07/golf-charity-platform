@@ -1,151 +1,175 @@
-'use client'
-import { useState, useEffect } from 'react'
-import { useAuth } from '@/context/AuthContext'
-import { getUserScores, addScore, updateScore, deleteScore } from '@/lib/scores'
+"use client";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
+import {
+  getUserScores,
+  addScore,
+  updateScore,
+  deleteScore,
+} from "@/lib/scores";
 
 export default function ScoresPage() {
-  const { user } = useAuth()
-  const [scores, setScores] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
-  const [editingId, setEditingId] = useState(null)
+  const { user } = useAuth();
+  const [scores, setScores] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [editingId, setEditingId] = useState(null);
 
   // Form state
   const [formData, setFormData] = useState({
-    score: '',
-    playedAt: new Date().toISOString().split('T')[0]
-  })
+    score: "",
+    playedAt: new Date().toISOString().split("T")[0],
+  });
 
   // Edit form state
   const [editData, setEditData] = useState({
-    score: '',
-    playedAt: ''
-  })
+    score: "",
+    playedAt: "",
+  });
 
   useEffect(() => {
-    if (user) fetchScores()
-  }, [user])
+    if (user) fetchScores();
+  }, [user]);
 
   async function fetchScores() {
-    setLoading(true)
-    const { data, error } = await getUserScores(user.id)
-    if (!error) setScores(data || [])
-    setLoading(false)
+    setLoading(true);
+    const { data, error } = await getUserScores(user.id);
+    if (!error) setScores(data || []);
+    setLoading(false);
   }
 
   async function handleAddScore(e) {
-    e.preventDefault()
-    setError('')
-    setSuccess('')
+    e.preventDefault();
+    setError("");
+    setSuccess("");
 
     // Validate score range
-    const scoreNum = parseInt(formData.score)
+    const scoreNum = parseInt(formData.score);
     if (scoreNum < 1 || scoreNum > 45) {
-      setError('Score must be between 1 and 45 (Stableford format)')
-      return
+      setError("Score must be between 1 and 45 (Stableford format)");
+      return;
     }
 
     // Validate date not in future
-    const today = new Date().toISOString().split('T')[0]
+    const today = new Date().toISOString().split("T")[0];
     if (formData.playedAt > today) {
-      setError('Score date cannot be in the future')
-      return
+      setError("Score date cannot be in the future");
+      return;
     }
 
-    setSubmitting(true)
+    setSubmitting(true);
 
-    const { error } = await addScore(user.id, formData.score, formData.playedAt)
+    const { error } = await addScore(
+      user.id,
+      formData.score,
+      formData.playedAt,
+    );
 
     if (error) {
-      setError('Failed to save score. Please try again.')
+      setError("Failed to save score. Please try again.");
     } else {
-      setSuccess(scores.length >= 5
-        ? 'Score added! Your oldest score was removed.'
-        : 'Score added successfully!')
+      setSuccess(
+        scores.length >= 5
+          ? "Score added! Your oldest score was removed."
+          : "Score added successfully!",
+      );
       setFormData({
-        score: '',
-        playedAt: new Date().toISOString().split('T')[0]
-      })
-      fetchScores()
+        score: "",
+        playedAt: new Date().toISOString().split("T")[0],
+      });
+      fetchScores();
     }
 
-    setSubmitting(false)
+    setSubmitting(false);
   }
 
   async function handleEditStart(scoreItem) {
-    setEditingId(scoreItem.id)
+    setEditingId(scoreItem.id);
     setEditData({
       score: scoreItem.score,
-      playedAt: scoreItem.played_at
-    })
+      playedAt: scoreItem.played_at,
+    });
   }
 
   async function handleEditSave(scoreId) {
-    setError('')
+    setError("");
 
-    const scoreNum = parseInt(editData.score)
+    const scoreNum = parseInt(editData.score);
     if (scoreNum < 1 || scoreNum > 45) {
-      setError('Score must be between 1 and 45')
-      return
+      setError("Score must be between 1 and 45");
+      return;
     }
 
-    const { error } = await updateScore(scoreId, editData.score, editData.playedAt)
+    if (!editData.playedAt) {
+      setError("Please select a date");
+      return;
+    }
+
+    const { data, error } = await updateScore(
+      scoreId,
+      editData.score,
+      editData.playedAt,
+    );
 
     if (error) {
-      setError('Failed to update score.')
+      console.error("Edit save error:", error);
+      setError("Failed to update score: " + error.message);
     } else {
-      setSuccess('Score updated!')
-      setEditingId(null)
-      fetchScores()
+      setSuccess("Score updated!");
+      setEditingId(null);
+      fetchScores();
     }
   }
 
   async function handleDelete(scoreId) {
-    if (!confirm('Are you sure you want to delete this score?')) return
+    if (!confirm("Are you sure you want to delete this score?")) return;
 
-    const { error } = await deleteScore(scoreId)
+    const { error } = await deleteScore(scoreId);
     if (!error) {
-      setSuccess('Score deleted.')
-      fetchScores()
+      setSuccess("Score deleted.");
+      fetchScores();
     }
   }
 
   function formatDate(dateStr) {
-    return new Date(dateStr).toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    })
+    return new Date(dateStr).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
   }
 
   function getScoreColor(score) {
-    if (score >= 36) return 'text-green-400'
-    if (score >= 25) return 'text-yellow-400'
-    return 'text-red-400'
+    if (score >= 36) return "text-green-400";
+    if (score >= 25) return "text-yellow-400";
+    return "text-red-400";
   }
 
   return (
     <div className="min-h-screen bg-black text-white">
-
       {/* Header */}
       <div className="border-b border-gray-800 px-6 py-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold">My Scores</h1>
-        <a href="/dashboard" className="text-gray-400 hover:text-white text-sm transition">
+        <a
+          href="/dashboard"
+          className="text-gray-400 hover:text-white text-sm transition"
+        >
           ← Back to Dashboard
         </a>
       </div>
 
       <div className="max-w-2xl mx-auto px-6 py-8 space-y-8">
-
         {/* Info Banner */}
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-start gap-3">
           <span className="text-blue-400 text-xl">ℹ</span>
           <div>
             <p className="text-sm text-gray-300">
-              Enter your last <strong className="text-white">5 Stableford scores</strong> (1–45 points each).
-              Adding a new score when you already have 5 will automatically remove your oldest score.
+              Enter your last{" "}
+              <strong className="text-white">5 Stableford scores</strong> (1–45
+              points each). Adding a new score when you already have 5 will
+              automatically remove your oldest score.
             </p>
           </div>
         </div>
@@ -166,7 +190,6 @@ export default function ScoresPage() {
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
           <h2 className="text-lg font-bold mb-5">Add New Score</h2>
           <form onSubmit={handleAddScore} className="space-y-4">
-
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm text-gray-400 mb-1">
@@ -177,7 +200,9 @@ export default function ScoresPage() {
                   min="1"
                   max="45"
                   value={formData.score}
-                  onChange={e => setFormData({ ...formData, score: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, score: e.target.value })
+                  }
                   required
                   placeholder="e.g. 32"
                   className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 transition"
@@ -192,8 +217,10 @@ export default function ScoresPage() {
                 <input
                   type="date"
                   value={formData.playedAt}
-                  max={new Date().toISOString().split('T')[0]}
-                  onChange={e => setFormData({ ...formData, playedAt: e.target.value })}
+                  max={new Date().toISOString().split("T")[0]}
+                  onChange={(e) =>
+                    setFormData({ ...formData, playedAt: e.target.value })
+                  }
                   required
                   className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 transition"
                 />
@@ -205,7 +232,9 @@ export default function ScoresPage() {
               disabled={submitting}
               className="w-full bg-green-500 hover:bg-green-400 disabled:opacity-50 text-black font-bold py-3 rounded-lg transition"
             >
-              {submitting ? 'Saving...' : `Add Score ${scores.length >= 5 ? '(Replaces Oldest)' : `(${scores.length}/5)`}`}
+              {submitting
+                ? "Saving..."
+                : `Add Score ${scores.length >= 5 ? "(Replaces Oldest)" : `(${scores.length}/5)`}`}
             </button>
           </form>
         </div>
@@ -214,15 +243,21 @@ export default function ScoresPage() {
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-lg font-bold">Your Last 5 Scores</h2>
-            <span className="text-sm text-gray-400">{scores.length}/5 scores</span>
+            <span className="text-sm text-gray-400">
+              {scores.length}/5 scores
+            </span>
           </div>
 
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Loading scores...</div>
+            <div className="text-center py-8 text-gray-500">
+              Loading scores...
+            </div>
           ) : scores.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-gray-500 text-4xl mb-3">🏌️</p>
-              <p className="text-gray-400">No scores yet. Add your first score above!</p>
+              <p className="text-gray-400">
+                No scores yet. Add your first score above!
+              </p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -236,23 +271,37 @@ export default function ScoresPage() {
                     <div className="space-y-3">
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-xs text-gray-400 mb-1 block">Score</label>
+                          <label className="text-xs text-gray-400 mb-1 block">
+                            Score
+                          </label>
                           <input
                             type="number"
                             min="1"
                             max="45"
                             value={editData.score}
-                            onChange={e => setEditData({ ...editData, score: e.target.value })}
+                            onChange={(e) =>
+                              setEditData({
+                                ...editData,
+                                score: e.target.value,
+                              })
+                            }
                             className="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500"
                           />
                         </div>
                         <div>
-                          <label className="text-xs text-gray-400 mb-1 block">Date</label>
+                          <label className="text-xs text-gray-400 mb-1 block">
+                            Date
+                          </label>
                           <input
                             type="date"
                             value={editData.playedAt}
-                            max={new Date().toISOString().split('T')[0]}
-                            onChange={e => setEditData({ ...editData, playedAt: e.target.value })}
+                            max={new Date().toISOString().split("T")[0]}
+                            onChange={(e) =>
+                              setEditData({
+                                ...editData,
+                                playedAt: e.target.value,
+                              })
+                            }
                             className="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500"
                           />
                         </div>
@@ -277,7 +326,9 @@ export default function ScoresPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <div className="text-center">
-                          <span className={`text-3xl font-bold ${getScoreColor(scoreItem.score)}`}>
+                          <span
+                            className={`text-3xl font-bold ${getScoreColor(scoreItem.score)}`}
+                          >
                             {scoreItem.score}
                           </span>
                           <p className="text-xs text-gray-500">pts</p>
@@ -287,7 +338,12 @@ export default function ScoresPage() {
                             {formatDate(scoreItem.played_at)}
                           </p>
                           <p className="text-xs text-gray-500">
-                            {index === 0 ? '🟢 Latest' : index === scores.length - 1 && scores.length === 5 ? '🔴 Oldest' : `#${index + 1}`}
+                            {index === 0
+                              ? "🟢 Latest"
+                              : index === scores.length - 1 &&
+                                  scores.length === 5
+                                ? "🔴 Oldest"
+                                : `#${index + 1}`}
                           </p>
                         </div>
                       </div>
@@ -341,27 +397,28 @@ export default function ScoresPage() {
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="bg-gray-800 rounded-xl p-4">
                 <p className="text-3xl font-bold text-green-400">
-                  {Math.round(scores.reduce((a, b) => a + b.score, 0) / scores.length)}
+                  {Math.round(
+                    scores.reduce((a, b) => a + b.score, 0) / scores.length,
+                  )}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">Average</p>
               </div>
               <div className="bg-gray-800 rounded-xl p-4">
                 <p className="text-3xl font-bold text-blue-400">
-                  {Math.max(...scores.map(s => s.score))}
+                  {Math.max(...scores.map((s) => s.score))}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">Best</p>
               </div>
               <div className="bg-gray-800 rounded-xl p-4">
                 <p className="text-3xl font-bold text-yellow-400">
-                  {Math.min(...scores.map(s => s.score))}
+                  {Math.min(...scores.map((s) => s.score))}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">Lowest</p>
               </div>
             </div>
           </div>
         )}
-
       </div>
     </div>
-  )
+  );
 }

@@ -53,7 +53,11 @@ export async function updateScore(scoreId, score, playedAt) {
     })
     .eq('id', scoreId)
     .select()
-    .single()
+
+  if (error) {
+    console.error('Update score error:', error)
+  }
+
   return { data, error }
 }
 
